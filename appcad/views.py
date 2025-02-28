@@ -16,3 +16,22 @@ def mostrar_view(request):
     if usuarios:
         return render(request, 'list.html', {'usuarios': usuarios})
     
+def atualizar_view(request, pk):
+    usuario = Usuario.objects.get(pk = pk)
+    if request.method == 'POST':
+        form = FormCad(request.POST, instance=usuario)
+        if form.is_valid():
+            form.save()
+            return redirect('usuarios:lista')
+    else:
+        form = FormCad(instance=usuario)
+    return render(request, 'atualizar.html', {'form': form, 'usuario': usuario})
+
+def deletar_view(request, pk):
+    usuario = Usuario.objects.get(pk = pk)
+    if request.method == 'POST':
+        usuario.delete()
+        return redirect('usuarios:lista')
+    else:
+        return render(request, 'confirmar.html', {'usuario': usuario})
+    
